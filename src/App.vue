@@ -1,28 +1,23 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <router-view></router-view>
+    <FooterGuide />
   </div>
 </template>
-
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import FooterGuide from './components/FooterGuide/FooterGuide'
+// import { reqAddress,reqCategorys } from './api'
 export default {
-  name: 'app',
   components: {
-    HelloWorld
-  }
+    FooterGuide
+  },
+  // async mounted () {
+  //   const result = await reqAddress(40.10038, 116.36867)
+  //   const result1 =await reqCategorys()
+  //   console.log(result);
+  //   console.log(result1);
+  // },
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style lang="stylus" rel="stylesheet/stylus" scoped></style>
+ 
