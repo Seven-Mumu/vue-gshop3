@@ -3,7 +3,7 @@ import ajax from './ajax'
 
 const BASE = '/api'
 
-// 1、根据经纬度获取位置详情
+// 1、根据经纬度获取位置详情   longitude--->经度   latitude--->纬度
 export const reqAddress = (latitude, longitude) => ajax({
   method: 'GET',
   url: BASE + `/position/${latitude},${longitude}`

@@ -6,18 +6,15 @@
 </template>
 <script>
 import FooterGuide from './components/FooterGuide/FooterGuide'
-// import { reqAddress,reqCategorys } from './api'
+
 export default {
   components: {
     FooterGuide
   },
-  // async mounted () {
-  //   const result = await reqAddress(40.10038, 116.36867)
-  //   const result1 =await reqCategorys()
-  //   console.log(result);
-  //   console.log(result1);
-  // },
+  mounted() {
+    // 发送请求获取地址信息
+    this.$store.dispatch('getAddress')
+  },
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus" scoped></style>
- 
