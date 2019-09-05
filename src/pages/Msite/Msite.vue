@@ -1,38 +1,30 @@
 <template>
   <section class="msite">
     <!--首页头部-->
-    <Header :title="address.name">
-      <span
-        class="header_search"
-        slot="left"
-      >
+    <Header :title="address.name||'正在定位中...'">
+      <span class="header_search"
+            slot="left">
         <i class="iconfont icon-sousuo"></i>
       </span>
       <span class="header_title">
         <span class="header_title_text ellipsis"></span>
       </span>
-      <span
-        class="header_login"
-        slot="right"
-      >
-        <span class="header_login_text">登录|注册</span>
+      <span class="header_login"
+            slot="right">
+        <span class="header_login_text">{{user._id?(user.name?(user.name):(user.phone?user.phone:'登录|注册')):('登录|注册')}}</span>
       </span>
     </Header>
     <!--首页导航-->
     <nav class="msite_nav">
       <div class="swiper-container">
         <div class="swiper-wrapper">
-          <div
-            class="swiper-slide"
-            v-for="(categorys,index) in categoryArr2"
-            :key="index"
-          >
-            <a
-              href="javascript:"
-              class="link_to_food"
-              v-for="(category,index) in categorys"
-              :key="index"
-            >
+          <div class="swiper-slide"
+               v-for="(categorys,index) in categoryArr2"
+               :key="index">
+            <a href="javascript:"
+               class="link_to_food"
+               v-for="(category,index) in categorys"
+               :key="index">
               <div class="food_container">
                 <img :src="`https://fuss10.elemecdn.com`+category.image_url">
               </div>
@@ -63,7 +55,12 @@ export default {
     ShopLists
   },
   computed: {
-    ...mapState(['address', 'categorys']),
+    ...mapState({
+      address: state => state.msite.address,
+      categorys: state => state.msite.categorys,
+      user: state => state.user.user
+    }),
+    // ...mapState(['address', 'categorys', 'user']),
     // 将请求回来的食品分类数据转换成二维数组 --- 原因：一共16个数据，两页轮播图，每页8个。需要先遍历大数组出两个div，在遍历小数组出a标签
     /* categoryArr () {
       // 定义一个大的数组，和一个小的数组，组成二维数组

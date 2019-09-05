@@ -4,41 +4,42 @@
       <div class="login_header">
         <h2 class="login_logo">硅谷外卖</h2>
         <div class="login_header_title">
-          <a
-            href="javascript:;"
-            :class="{on:loginWay}"
-            @click="loginWay=true"
-          >短信登录</a>
-          <a
-            href="javascript:;"
-            :class="{on:!loginWay}"
-            @click="loginWay=false"
-          >密码登录</a>
+          <a href="javascript:;"
+             :class="{on:loginWay}"
+             @click="loginWay=true">短信登录</a>
+          <a href="javascript:;"
+             :class="{on:!loginWay}"
+             @click="loginWay=false">密码登录</a>
         </div>
       </div>
       <div class="login_content">
         <form>
           <div :class="{on:loginWay}">
             <section class="login_message">
-              <input
-                type="tel"
-                maxlength="11"
-                placeholder="手机号"
-                v-model="phone"
-              >
-              <button
-                :disabled="!isRightPhone||time>0"
-                :class="{right:isRightPhone}"
-                @click.prevent="sendCode"
-                class="get_verification"
-              >{{time>0?`已发送(${time})s`:'获取验证码'}}</button>
+              <input type="tel"
+                     maxlength="11"
+                     placeholder="手机号"
+                     v-model="phone"
+                     name="phone"
+                     v-validate="'required|phone'">
+              <span style="color:red"
+                    v-show="errors.has('phone')"
+                    class="help is-danger">{{ errors.first('phone') }}</span>
+              <button :disabled="!isRightPhone||time>0"
+                      :class="{right:isRightPhone}"
+                      @click.prevent="sendCode"
+                      class="get_verification">{{time>0?`已发送(${time})s`:'获取验证码'}}</button>
             </section>
             <section class="login_verification">
-              <input
-                type="tel"
-                maxlength="8"
-                placeholder="验证码"
-              >
+              <input type="tel"
+                     maxlength="8"
+                     placeholder="验证码"
+                     v-model="code"
+                     name="code"
+                     v-validate="'required|code'">
+              <span style="color:red"
+                    v-show="errors.has('code')"
+                    class="help is-danger">{{ errors.first('code') }}</span>
             </section>
             <section class="login_hint">
               温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
@@ -48,72 +49,81 @@
           <div :class="{on:!loginWay}">
             <section>
               <section class="login_message">
-                <input
-                  type="tel"
-                  maxlength="11"
-                  placeholder="手机/邮箱/用户名"
-                >
+                <input type="tel"
+                       maxlength="11"
+                       placeholder="手机/邮箱/用户名"
+                       v-model="name"
+                       name="name"
+                       v-validate="'required'">
+                <span style="color:red"
+                      v-show="errors.has('name')"
+                      class="help is-danger">{{ errors.first('name') }}</span>
               </section>
               <section class="login_verification">
-                <input
-                  :type="isShowPwd?'text':'password'"
-                  maxlength="8"
-                  placeholder="密码"
-                >
-                <div
-                  class="switch_button"
-                  :class="isShowPwd?'on':'off'"
-                  @click="isShowPwd=!isShowPwd"
-                >
-                  <div
-                    class="switch_circle"
-                    :class="{rights:isShowPwd}"
-                  ></div>
+                <input :type="isShowPwd?'text':'password'"
+                       maxlength="8"
+                       placeholder="密码"
+                       v-model="pwd"
+                       name="pwd"
+                       v-validate="'required'">
+                <span style="color:red"
+                      v-show="errors.has('pwd')"
+                      class="help is-danger">{{ errors.first('pwd') }}</span>
+                <div class="switch_button"
+                     :class="isShowPwd?'on':'off'"
+                     @click="isShowPwd=!isShowPwd">
+                  <div class="switch_circle"
+                       :class="{rights:isShowPwd}"></div>
                   <span class="switch_text">{{isShowPwd?'abc':''}}</span>
                 </div>
               </section>
               <section class="login_message">
-                <input
-                  type="text"
-                  maxlength="11"
-                  placeholder="验证码"
-                >
-                <img
-                  class="get_verification"
-                  src="http://localhost:5000/captcha"
-                  alt="captcha"
-                  @click="sendCaptcha"
-                  ref="captcha"
-                >
+                <input type="text"
+                       maxlength="11"
+                       placeholder="验证码"
+                       name="captcha"
+                       v-model="captcha"
+                       v-validate="'required'">
+                <span style="color:red"
+                      v-show="errors.has('captcha')"
+                      class="help is-danger">{{ errors.first('captcha') }}</span>
+                <img class="get_verification"
+                     src="http://localhost:5000/captcha"
+                     alt="captcha"
+                     @click="sendCaptcha"
+                     ref="captcha">
               </section>
             </section>
           </div>
-          <button class="login_submit">登录</button>
+          <button class="login_submit"
+                  @click.prevent="login">登录</button>
         </form>
-        <a
-          href="javascript:;"
-          class="about_us"
-        >关于我们</a>
+        <a href="javascript:;"
+           class="about_us">关于我们</a>
       </div>
-      <a
-        href="javascript:"
-        class="go_back"
-        @click="$router.back()"
-      >
+      <a href="javascript:"
+         class="go_back"
+         @click="$router.back()">
         <i class="iconfont icon-jiantou2"></i>
       </a>
     </div>
   </section>
 </template>
 <script>
-import { clearInterval } from 'timers';
+import { reqSendCode, reqSmsLogin, reqPwdLogin } from '../../api';
+// 引入mutations的type
+import { RECEIVE_USER } from '../../store/mutation-type'
 export default {
   data () {
     return {
       loginWay: true, // 切换登录方式的flag
       phone: '', // 用户输入的手机号
       time: 0,  // 倒计时
-      isShowPwd: false // 显示明文密码
+      isShowPwd: false, // 显示明文密码
+      code: '', // 验证码
+      name: '', // 用户名
+      pwd: '', // 密码
+      captcha: '' // 图形验证码
     }
   },
   computed: {
@@ -125,16 +135,72 @@ export default {
     }
   },
   methods: {
-    sendCode () {
+    async sendCode () {
       // 倒计时的操作
       this.time = 30
-      this.timeId = setInterval(() => {
-        this.time--
-        if (this.time < 0) {
-          this.time = 0
-          clearInterval(this.timeId)
+      const timeId = setInterval(() => {
+        if (this.time === 0) {
+          window.clearInterval(timeId)
+        } else {
+          this.time--
         }
       }, 1000);
+      // 进入倒计时，进行发送短信验证码的操作
+      const result = await reqSendCode(this.phone)
+      // 判断是否发送验证码成功
+      if (result.code === 0) {
+        // 成功
+        alert('发送短信验证码成功')
+      } else {
+        // 失败
+        alert('发送短信验证码失败')
+        // 倒计时归零
+        this.time = 0
+        // 清空定时器
+        window.clearInterval(timeId)
+      }
+    },
+    //点击登录按钮 进行 登录操作
+    async login () {
+      // 定义一个变量存储登录方式的名字，用来进行表单验证
+      let names
+      const { loginWay, phone, code, name, pwd, captcha } = this
+      // 判断是哪种登录方式
+      if (loginWay) {
+        // 手机号登录
+        names = ['phone', 'code']
+      } else {
+        // 用户名密码登录
+        names = ['name', 'pwd', 'captcha']
+      }
+      // 登录前判断表单验证是否全部通过 验证通过返回true，否则返回false
+      const success = await this.$validator.validateAll(names)
+      // 进行判断  是否验证通过
+      if (success) {
+        // 验证通过
+        let result
+        // 再次判断是那种登录方式，然后调用对应的接口请求函数
+        if (loginWay) {
+          // 手机号码登录
+          result = await reqSmsLogin(phone, code)
+          // 停止计时
+          this.time = 0
+        } else {
+          // 用户名密码登录
+          result = await reqPwdLogin({ name, pwd, captcha })
+        }
+        if (result.code === 0) {
+          // 登录成功，跳转到个人中心页面
+          this.$router.replace('/profile')
+          // 拿到用户的登录信息
+          const user = result.data
+          // console.log(user);
+          // 更新vuex中的user
+          this.$store.commit(RECEIVE_USER, user)
+        } else {
+          alert('登录失败')
+        }
+      }
     },
     sendCaptcha () {
       this.$refs.captcha.src = 'http://localhost:5000/captcha?time=' + Date.now()

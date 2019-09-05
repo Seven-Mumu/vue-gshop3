@@ -10,5 +10,18 @@ export default {
   // 食品分类信息
   categorys: [],
   // 商家信息
-  shops: []
+  shops: [],
+
+
+
+  // 保存登录的用户信息
+  user: {},
+
+
+  // 点餐的信息
+  goods: [],
+  // 评价的信息
+  ratings: [],
+  // 商家的信息
+  info: {}
 }

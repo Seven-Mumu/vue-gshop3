@@ -7,16 +7,22 @@
     </div>
     <h4 class="shop_container">
       <ul class="shop_list">
-        <li class="shop_li border-1px" v-for="(shop,index) in shops" :key="index">
+        <li class="shop_li border-1px"
+            v-for="(shop,index) in shops"
+            :key="index"
+            @click="$router.push('/shop')">
           <a>
             <div class="shop_left">
-              <img class="shop_img" :src="'https://fuss10.elemecdn.com'+shop.image_path">
+              <img class="shop_img"
+                   :src="'https://fuss10.elemecdn.com'+shop.image_path">
             </div>
             <h4 class="shop_right">
               <section class="shop_detail_header">
                 <h4 class="shop_title ellipsis">{{shop.name}}</h4>
                 <ul class="shop_detail_ul">
-                  <li class="supports" v-for="(support,index) in shop.supports" :key="index">{{support.icon_name}}</li>
+                  <li class="supports"
+                      v-for="(support,index) in shop.supports"
+                      :key="index">{{support.icon_name}}</li>
                 </ul>
               </section>
               <section class="shop_rating_order">
@@ -28,7 +34,8 @@
                     <span class="star-item half"></span>
                     <span class="star-item off"></span>
                   </div> -->
-                  <Star :size='24' :score="shop.rating" />
+                  <Star :size='24'
+                        :score="shop.rating" />
                   <div class="rating_section">
                     {{shop.rating}}
                   </div>
@@ -51,6 +58,18 @@
           </a>
         </li>
       </ul>
+      <ul v-if="!shops.length">
+        <li><img src="./images/shop_back.svg"
+               alt=""></li>
+        <li><img src="./images/shop_back.svg"
+               alt=""></li>
+        <li><img src="./images/shop_back.svg"
+               alt=""></li>
+        <li><img src="./images/shop_back.svg"
+               alt=""></li>
+        <li><img src="./images/shop_back.svg"
+               alt=""></li>
+      </ul>
     </h4>
   </h4>
 </template>
@@ -61,7 +80,10 @@ export default {
     this.$store.dispatch('getShops')
   },
   computed: {
-    ...mapState(['shops'])
+    // ...mapState(['shops'])
+    ...mapState({
+      shops: state => state.msite.shops
+    })
   },
 }
 </script>

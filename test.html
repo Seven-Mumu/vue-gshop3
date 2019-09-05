@@ -10,18 +10,32 @@
 
 <body>
   <script>
-    let arr = [{
-      id: 66,
-      name: "a"
-    }, {
-      id: 85,
-      name: "b"
-    }];
-    const result = arr.reduce((pre, now) => {
-       pre[now.id] = now
-       return pre
-    }, {})
-    console.log(result);
+    // let arr = [{
+    //   id: 66,
+    //   name: "a"
+    // }, {
+    //   id: 85,
+    //   name: "b"
+    // }];
+    // const result = arr.reduce((pre, now) => {
+    //    pre[now.id] = now
+    //    return pre
+    // }, {})
+    // console.log(result);
+    // alert(1&&2)
+    var name='jay'
+    var person = {
+      name:'kang',
+      pro:{
+        name:'michael',
+        getName:function(){
+          return this.name
+        }
+      }
+    }
+    console.log(person.pro.getName());
+    var people=person.pro.getName
+    console.log(people());
   </script>
 </body>
 

@@ -1,31 +1,20 @@
-// 发送ajax请求的函数模块
-/* 
-1.处理post请求体参数，转换为urlencoded格式（默认是json格式）
-2.让成功的结果不是response，而是response.data
-3.统一处理错误请求
-*/
 import axios from 'axios'
-import qs from 'qs'
-import {
-  Promise
-} from 'q';
-
-// 请求拦截器
-axios.interceptors.request.use(config => {
-  if (config.method.toUpperCase() === 'POST' && config.data instanceof Object) {
-    config.data = qs.stringify(config.data)
-  }
-
-  return config
-})
-
-// 响应拦截器
-axios.interceptors.response.use(response => {
-  return response.data
-}, error => {
-  alert('请求异常', error.message)
-  // 中断promise链
-  return new Promise(() => {})
-})
-
-export default axios
+export default function ajax(url, data={}, method='GET') {
+  return new Promise((resolve, reject) => {
+    let promise
+    // 执行异步ajax请求
+    if(method==='GET') {
+      promise = axios.get(url, {params: data}) // params配置, 指定的是query参数
+    } else {
+      promise = axios.post(url, data)
+    }
+    promise.then(
+      response => {  // 如果成功了, 调用resolve()
+        resolve(response.data)
+      },
+      error => { // 如果失败了, 不调用reject(), 而是提示错误信息
+        alert('请求异常: ' + error.message)
+      }
+    )
+  })
+}
