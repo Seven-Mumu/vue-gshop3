@@ -1,30 +1,22 @@
 <template>
   <section class="profile">
-    <!-- <header class="header">
-      <a class="header_title">
-        <span class="header_title_text">我的</span>
-      </a>
-    </header> -->
-    <Header title="我 的" />
-    <section class="profile-number"
-             @click="$router.push(user._id ? '/userinfo' : '/login')">
-      <a href="javascript:"
-         class="profile-link">
+    <Header title="我的" />
+    <section class="profile-number">
+      <a
+        href="javascript:"
+        class="profile-link"
+        @click="user._id?($router.push('/userInfo')):($router.push('/login'))"
+      >
         <div class="profile_image">
           <i class="iconfont icon-person"></i>
         </div>
         <div class="user-info">
-          <p class="user-info-top"
-             v-if="!user.phone">
-            {{ user.name ? user.name : '登录/注册' }}
-          </p>
+          <p v-if="!user.phone" class="user-info-top">{{user.name?user.name:'登录/注册'}}</p>
           <p v-if="!user.name">
             <span class="user-icon">
               <i class="iconfont icon-shouji icon-mobile"></i>
             </span>
-            <span class="icon-mobile-number">{{
-              user.phone ? user.phone : '暂无绑定手机号'
-            }}</span>
+            <span class="icon-mobile-number">{{user.phone?user.phone:'暂无绑定手机号'}}</span>
           </p>
         </div>
         <span class="arrow">
@@ -34,27 +26,29 @@
     </section>
     <section class="profile_info_data border-1px">
       <ul class="info_data_list">
-        <a href="javascript:"
-           class="info_data_link">
-          <span class="info_data_top"><span>0.00</span>元</span>
+        <a href="javascript:" class="info_data_link">
+          <span class="info_data_top">
+            <span>0.00</span>元
+          </span>
           <span class="info_data_bottom">我的余额</span>
         </a>
-        <a href="javascript:"
-           class="info_data_link">
-          <span class="info_data_top"><span>0</span>个</span>
+        <a href="javascript:" class="info_data_link">
+          <span class="info_data_top">
+            <span>0</span>个
+          </span>
           <span class="info_data_bottom">我的优惠</span>
         </a>
-        <a href="javascript:"
-           class="info_data_link">
-          <span class="info_data_top"><span>0</span>分</span>
+        <a href="javascript:" class="info_data_link">
+          <span class="info_data_top">
+            <span>0</span>分
+          </span>
           <span class="info_data_bottom">我的积分</span>
         </a>
       </ul>
     </section>
     <section class="profile_my_order border-1px">
       <!-- 我的订单 -->
-      <a href="javascript:"
-         class="my_order">
+      <a href="javascript:" class="my_order">
         <span>
           <i class="iconfont icon-order-s"></i>
         </span>
@@ -66,8 +60,7 @@
         </div>
       </a>
       <!-- 积分商城 -->
-      <a href="javascript:"
-         class="my_order">
+      <a href="javascript:" class="my_order">
         <span>
           <i class="iconfont icon-jifen"></i>
         </span>
@@ -79,8 +72,7 @@
         </div>
       </a>
       <!-- 硅谷外卖会员卡 -->
-      <a href="javascript:"
-         class="my_order">
+      <a href="javascript:" class="my_order">
         <span>
           <i class="iconfont icon-vip"></i>
         </span>
@@ -92,10 +84,9 @@
         </div>
       </a>
     </section>
-    <span class="profile_my_order border-1px">
+    <section class="profile_my_order border-1px">
       <!-- 服务中心 -->
-      <a href="javascript:"
-         class="my_order">
+      <a href="javascript:" class="my_order">
         <span>
           <i class="iconfont icon-fuwu"></i>
         </span>
@@ -106,41 +97,42 @@
           </span>
         </div>
       </a>
-    </span>
-    <br />
-    <mt-button @click="logout"
-               style="width:100%"
-               type="danger"
-               v-show="user._id">退出登录</mt-button>
+    </section>
+    <section class="profile_my_order border-1px">
+      <!-- 服务中心 -->
+      <mt-button v-show="user._id" style="width:100%" type="danger" @click="loginOut">退出</mt-button>
+    </section>
   </section>
 </template>
 <script>
-import { mapState } from 'vuex'
-import { MessageBox } from 'mint-ui';
+import { mapState } from "vuex";
+import { MessageBox } from "mint-ui";
 export default {
   computed: {
-    // ...mapState(['user'])
+    // ...mapState(["user"])
     ...mapState({
-      user: state => state.user.user
+      user:state=>state.user.user
     })
   },
   methods: {
-    logout () {
-      MessageBox.confirm('确定执行此操作?').then(() => {
-        this.$store.dispatch('resetUser')
-      }, () => {
-
-      })
+    // 退出
+    loginOut() {
+      MessageBox.confirm( "确定执行此操作?" ).then(action => {
+        this.$store.dispatch("resetUserInfo");
+      },
+      // eslint-disable-next-line
+      action => {
+       
+      });
     }
-  },
-}
+  }
+};
 </script>
-<style lang="stylus" rel="stylesheet/stylus" scoped>
+<style lang="stylus" rel="stylesheet/stylus">
 @import '../../common/stylus/mixins.styl'
 .profile // 我的
   width 100%
   .profile-number
-    top-border-1px(#e4e4e4)
     margin-top 45.5px
     .profile-link
       clearFix()
@@ -269,4 +261,3 @@ export default {
             color #bbb
             font-size 10px
 </style>
- 

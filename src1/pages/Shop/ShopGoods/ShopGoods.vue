@@ -4,42 +4,47 @@
       <div class="menu-wrapper">
         <ul ref="leftUl">
           <!--:class="{current:true}" 此时的li的current样式暂时没有设置---坑-->
-          <li class="menu-item"
-              v-for="(good,index) in goods"
-              :key="index">
-            <img class="icon"
-                 :src="good.icon"
-                 v-show="good.icon" />
-            <span class="text bottom-border-1px">{{good.name}}</span>
+          <li
+            class="menu-item"
+            :class="{ current: currentIndex === index }"
+            v-for="(good, index) in goods"
+            :key="index"
+            @click="clickItem(index)"
+          >
+            <img class="icon" :src="good.icon" v-show="good.icon" />
+            <span class="text bottom-border-1px">{{ good.name }}</span>
           </li>
         </ul>
       </div>
       <div class="foods-wrapper">
-        <ul>
-          <li class="food-list-hook"
-              v-for="(good,index) in goods"
-              :key="index">
-            <h1 class="title">{{good.name}}</h1>
-            <ul ref="rightUl">
-              <li class="food-item bottom-border-1px"
-                  v-for="(food,index) in good.foods"
-                  :key="index">
+        <ul ref="rightUl">
+          <li
+            class="food-list-hook"
+            v-for="(good, index) in goods"
+            :key="index"
+          >
+            <h1 class="title">{{ good.name }}</h1>
+            <ul>
+              <li
+                class="food-item bottom-border-1px"
+                v-for="(food, index) in good.foods"
+                :key="index"
+              >
                 <div class="icon">
-                  <img width="57"
-                       height="57"
-                       :src="food.icon" />
+                  <img width="57" height="57" :src="food.icon" />
                 </div>
                 <div class="content">
-                  <h2 class="name">{{food.name}}</h2>
-                  <p class="desc">{{food.description}}</p>
+                  <h2 class="name">{{ food.name }}</h2>
+                  <p class="desc">{{ food.description }}</p>
                   <div class="extra">
-                    <span class="count">月售{{food.sellCount}}份</span>
-                    <span>好评率{{food.rating}}%</span>
+                    <span class="count">月售{{ food.sellCount }}份</span>
+                    <span>好评率{{ food.rating }}%</span>
                   </div>
                   <div class="price">
-                    <span class="now">￥{{food.price}}</span>
-                    <span class="old"
-                          v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+                    <span class="now">￥{{ food.price }}</span>
+                    <span class="old" v-show="food.oldPrice"
+                      >￥{{ food.oldPrice }}</span
+                    >
                   </div>
                   <div class="cartcontrol-wrapper">CartControl组件</div>
                 </div>
@@ -66,8 +71,8 @@ export default {
     await this.$store.dispatch("getGoods")
     // 初始化滑动对象
     this._initBscroll()
-    // 初始化数据
-
+    // 初始化数据 -- 向数组中装载数据
+    this._initTops()
 
   },
   computed: {
@@ -75,17 +80,64 @@ export default {
     ...mapState({
       goods: state => state.shop.goods
     }),
+    currentIndex () {
+      const { scrollY, tops } = this
+      // 从数组中获取对应的索引
+      const index = tops.findIndex((top, index) => scrollY > top && scrollY < tops[index + 1])
+      // console.log(index)
+      // 判断当前的索引和选中的是否一致
+      if (this.index !== index && this.scrollLeft) {
+        this.index = index
+        // 左侧列表向上滑动
+        // 拿到左侧列表
+        const li = this.$refs.leftUl.children[index]
+        // 滑动到指定的li
+        this.scrollLeft.scrollToElement(li, 300)
+      }
+      return index
+    }
   },
   methods: {
     _initBscroll () {
       // 左侧的列表
-      this.scrollLeft = new BScroll(".menu-wrapper")
+      this.scrollLeft = new BScroll(".menu-wrapper", {
+        click: true
+      })
       this.scrollRight = new BScroll(".foods-wrapper", {
         click: true,
-        probeType: 1
+        probeType: 3
       })
+      this.scrollRight.on('scroll', ({ x, y }) => {
+        this.scrollY = Math.abs(y)
+        // console.log(y)
+      }
+      )
+      this.scrollRight.on('scrollEnd', ({ x, y }) => {
+        this.scrollY = Math.abs(y)
+        // console.log(y)
+      }
+      )
+    },
+    _initTops () {
+      let tops = []
+      let top = 0
+      tops.push(top)
+      // 获取右侧所有的li的高度
+      const list = this.$refs.rightUl.children
+      // // 将伪数组转换为真数组
+      Array.prototype.slice.call(list).forEach(li => {
+        top += li.clientHeight
+        tops.push(top)
+      })
+      console.log(tops)
+      this.tops = tops
+    },
+    clickItem (index) {
+      // 根据索引找数组中的值
+      const scrollY = this.tops[index]
+      this.scrollY == scrollY
+      this.scrollRight.scrollTo(0, -scrollY, 300)
     }
-
   }
 };
 </script>

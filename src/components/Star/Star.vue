@@ -1,6 +1,6 @@
 <template>
   <div class="star" :class="`star-`+size">
-    <span class="star-item" v-for="(c,index) in starClass" :key="index" :class="c"></span>
+    <span class="star-item" :class="cls" v-for="(cls,index) in classArr" :key="index"></span>
   </div>
 </template>
 <script>
@@ -9,26 +9,38 @@ export default {
     size: Number,
     score: Number
   },
+  name: "Star",
+  // 计算出来,根据分数进行计算
+  // 2.7分-----5个span-----on---half----off,一个属性的值改变,其相关联的属性值会自动变化
+  // 4.8分
   computed: {
-    starClass () {
-      const arr = []
-      const { score } = this
-      const scoreInt = Math.floor(score)
+    // classArr=['on','on','on','half','off']
+    // 容器:on,on,on,half,off
+    // 容器:on,on,on,on,half
+    classArr() {
+      let classArr = []; // 存放类样式的名字的
+      const { score } = this;
+      const scoreInt = Math.floor(score);
+      // 计算全亮的星星
       for (let i = 0; i < scoreInt; i++) {
-        arr.push('on')
+        classArr.push("on");
       }
-      if (score * 10 - scoreInt * 10 >= 5) {
-        arr.push('half')
+      // 计算半个星星
+      //console.log(score - scoreInt)----先乘10
+      if (score*10 - scoreInt*10 >= 5) {
+        // 可能会有个坑
+        classArr.push("half");
       }
-      while (arr.length < 5) {
-        arr.push('off')
+      while (classArr.length < 5) {
+        classArr.push("off");
       }
-      return arr
+
+      return classArr;
     }
-  },
-}
+  }
+};
 </script>
-<style lang="stylus" rel="stylesheet/stylus" scoped>
+<style lang="stylus" rel="stylesheet/stylus">
 @import '../../common/stylus/mixins.styl'
 .star // 2x图 3x图
   float left
@@ -79,4 +91,3 @@ export default {
       &.off
         bg-image('./images/stars/star24_off')
 </style>
- 

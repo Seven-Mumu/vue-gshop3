@@ -1,28 +1,21 @@
 <template>
-  <!--首页头部-->
-  <header class="msite_header">
-    <!-- <span class="header_search" slot="left">
-      <i class="iconfont icon-sousuo"></i>
-    </span> -->
-    <slot name="left"></slot>
+  <header class="header">
+    <slot name="left"/>
     <span class="header_title">
       <span class="header_title_text ellipsis">{{title}}</span>
     </span>
-    <slot name="right"></slot>
-    <!-- <span class="header_login" slot="right">
-      <span class="header_login_text">登录|注册</span>
-    </span> -->
+    <slot name="right"/>
   </header>
 </template>
 <script>
 export default {
-  props:{
-    title:String
+  props: {
+    title: String
   }
-}
+};
 </script>
-<style lang="stylus" rel="stylesheet/stylus" scoped>
-.msite_header
+<style lang="stylus" rel="stylesheet/stylus">
+.header
   background-color #02a774
   position fixed
   z-index 100
@@ -62,4 +55,3 @@ export default {
     .header_login_text
       color #fff
 </style>
- 

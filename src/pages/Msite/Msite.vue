@@ -2,31 +2,26 @@
   <section class="msite">
     <!--首页头部-->
     <Header :title="address.name||'正在定位中...'">
-      <span class="header_search"
-            slot="left">
+      <span class="header_search" slot="left">
         <i class="iconfont icon-sousuo"></i>
       </span>
-      <span class="header_title">
-        <span class="header_title_text ellipsis"></span>
-      </span>
-      <span class="header_login"
-            slot="right">
-        <span class="header_login_text">{{user._id?(user.name?(user.name):(user.phone?user.phone:'登录|注册')):('登录|注册')}}</span>
+      <span class="header_login" slot="right">
+        <span class="header_login_text">{{user._id?(user.name?(user.name):(user.phone?(user.phone):('登录|注册'))):('登录|注册')}}</span>
       </span>
     </Header>
     <!--首页导航-->
     <nav class="msite_nav">
       <div class="swiper-container">
         <div class="swiper-wrapper">
-          <div class="swiper-slide"
-               v-for="(categorys,index) in categoryArr2"
-               :key="index">
-            <a href="javascript:"
-               class="link_to_food"
-               v-for="(category,index) in categorys"
-               :key="index">
+          <div class="swiper-slide" v-for="(categorys,index) in categoryArr" :key="index">
+            <a
+              href="javascript:"
+              class="link_to_food"
+              v-for="(category,index) in categorys"
+              :key="index"
+            >
               <div class="food_container">
-                <img :src="`https://fuss10.elemecdn.com`+category.image_url">
+                <img :src="`https://fuss10.elemecdn.com`+category.image_url" />
               </div>
               <span>{{category.title}}</span>
             </a>
@@ -37,77 +32,125 @@
       </div>
     </nav>
     <!--首页附近商家-->
-    <ShopLists />
+    <ShopList />
   </section>
 </template>
 <script>
-// 引入chunk -- 转换二维数组
-import chunk from 'lodash/chunk'
+// 引入商家列表组件
+import ShopList from "../../components/ShopList/ShopList.vue";
+// 引入swiper包
+import Swiper from "swiper";
+import "swiper/dist/css/swiper.css";
 // 引入vuex
-import { mapState } from 'vuex'
-// 引入商家列表信息组件
-import ShopLists from '../../components/ShopLists/ShopLists'
-// 引入swiper和其css样式 --- 轮播图
-import Swiper from 'swiper'
-import 'swiper/dist/css/swiper.css'
+import { mapState } from "vuex";
 export default {
+  name: "MSite",
+  // 注册组件
   components: {
-    ShopLists
+    ShopList
+  },
+  async mounted() {
+    // 获取商铺信息--shops
+    this.$store.dispatch("getShops");
+
+    // 获取食品分类的信息----vuex中
+    await this.$store.dispatch("getCategorys");
+    this.$nextTick(() => {
+      new Swiper(".swiper-container", {
+        loop: true, // 循环模式选项
+        // 如果需要分页器
+        pagination: {
+          el: ".swiper-pagination"
+        }
+      });
+    });
+
+    // this.$store.dispatch("getCategorys", () => {
+    //   this.$nextTick(() => {
+    //     new Swiper(".swiper-container", {
+    //       loop: true, // 循环模式选项
+    //       // 如果需要分页器
+    //       pagination: {
+    //         el: ".swiper-pagination"
+    //       }
+    //     });
+    //   });
+    // });
+
+    // 数据有了,界面渲染完毕了,才能new实例对象----轮播图才有效果
+    /* eslint-disable no-new */
+    // new Swiper(".swiper-container", {
+    //   loop: true, // 循环模式选项
+    //   // 如果需要分页器
+    //   pagination: {
+    //     el: ".swiper-pagination"
+    //   }
+    // });
   },
   computed: {
+    // 模块化之后--错误了
+    // ...mapState(["address", "categorys",'user']),
     ...mapState({
-      address: state => state.msite.address,
-      categorys: state => state.msite.categorys,
-      user: state => state.user.user
+      address:state=>state.msite.address,
+      categorys:state=>state.msite.categorys,
+      user:state=>state.user.user
     }),
-    // ...mapState(['address', 'categorys', 'user']),
-    // 将请求回来的食品分类数据转换成二维数组 --- 原因：一共16个数据，两页轮播图，每页8个。需要先遍历大数组出两个div，在遍历小数组出a标签
-    /* categoryArr () {
-      // 定义一个大的数组，和一个小的数组，组成二维数组
-      let bigArr = []
-      let smallArr = []
-      // 取出请求回来的数据的数组
-      const { categorys } = this
-      // 遍历请求回来的数据的数组
+    // categorys----16条数据---一个大数组里面有两个小数组---二维数组
+    // 对categorys计算,产生一个二维数组---上面html中遍历就是二维数组
+    categoryArr() {
+      const { categorys } = this;
+      let bigArr = []; // 大数组
+      let smallArr = []; // 小数组
+      // 遍历当前的数组--16条数据
       categorys.forEach(category => {
-        // 当小数组里面没有数据的时候，把小数组放入大数组中，成为大数组中的第一个数据
+        // 先判断小数组是否有数据
         if (smallArr.length === 0) {
-          bigArr.push(smallArr)
+          // 小数组中没有数据,就把小数组添加到大的数组中
+          bigArr.push(smallArr);
         }
-        // 将遍历出来的每一个食品分类信息添加到小数组中
-        smallArr.push(category)
-        // 当小数组中的数据为8个的时候，清空现有的数组（相当于又重新创建了一个新的空的小数组）
+        // 此时大数组中有一个小数组,并且该小数组没有数据
+
+        smallArr.push(category);
         if (smallArr.length === 8) {
-          smallArr = []
+          smallArr = [];
         }
-      })
-      // 最后返回制作好的大的二维数组
-      return bigArr
-    } */
-    categoryArr2 () {
-      return chunk(this.categorys, 8)
+      });
+
+      return bigArr;
     }
-  },
-  async mounted () {
-    // 发送ajax请求获取食品分类信息
-    await this.$store.dispatch('getCategorys')
-    // 由于请求食品分类是异步请求数据，有很大可能数据还没有请求回来，就已经new swiper了，这样的话轮播图效果就会不显示分页。
-    // 所以可以调用vm实例上的方法 ----> $nextTick（callback），此方法将回调延迟到下次dom更新循环之后执行。也就是界面更新后执行回调函数，可以等请求有了结果再执行swiper代码
-    this.$nextTick(() => {
-      // 创建swiper对象 ---> 必须在列表数据显示之后创建
-      new Swiper('.swiper-container', {
-        // 无限轮播
-        loop: true,
-        // 分页器
-        pagination: {
-          el: '.swiper-pagination'
-        }
-      })
-    })
   }
-}
+  // 监视---第二种方式:
+  // 如果vue中的状态数据发生变化,会立刻执行watch中的回调函数,然后异步更新界面
+  // watch: {
+  //   categorys() {
+  //     this.$nextTick(() => {
+  //       new Swiper(".swiper-container", {
+  //         loop: true, // 循环模式选项
+  //         // 如果需要分页器
+  //         pagination: {
+  //           el: ".swiper-pagination"
+  //         }
+  //       });
+  //     });
+  //   }
+  // }
+
+  // watch: {
+  //   categorys() {
+  //     setTimeout(() => {
+  //       new Swiper(".swiper-container", {
+  //         loop: true, // 循环模式选项
+  //         // 如果需要分页器
+  //         pagination: {
+  //           el: ".swiper-pagination"
+  //         }
+  //       });
+  //     }, 2000);
+  //   }
+  // }
+};
 </script>
-<style lang="stylus" rel="stylesheet/stylus" scoped>
+<style lang="stylus" rel="stylesheet/stylus">
 @import '../../common/stylus/mixins.styl'
 .msite // 首页
   width 100%
@@ -149,4 +192,3 @@ export default {
         >span.swiper-pagination-bullet-active
           background #02a774
 </style>
- 

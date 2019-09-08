@@ -1,39 +1,37 @@
-// 引入常量
-import {
-  RESET_USER,
-  RECEIVE_USER
-} from '../mutation-type'
-// 引入发送请求的方法
-import {
-  reqLogout
-} from '../../api'
-
-const state = {
-  // 保存登录的用户信息
-  user: {},
-}
-const mutations = {
+// 引入常量名-----mutation的types
+import {  RECEIVE_USER, RESET_USER } from '../mutation-types.js'
+import {  reqLoginOut } from '../../api'
+const state={
+   
   // 用户信息
+  user:{},
+}
+const mutations={
+  
+  // 更新用户信息
   [RECEIVE_USER](state, user) {
     state.user = user
   },
-  // 退出登录清空用户信息
+  // 重置用户信息
   [RESET_USER](state) {
     state.user = {}
   },
+
 }
-const actions = {
-  // 退出登录
-  async resetUser({
-    commit
-  }) {
-    const result = await reqLogout()
+const actions={
+   // 发送请求干掉用户相关的信息----退出
+
+   async resetUserInfo({ commit }) {
+    const result = await reqLoginOut()
     if (result.code === 0) {
+      // 成功退出了
       commit(RESET_USER)
     }
   },
+
 }
-const getters = {}
+const getters={}
+
 
 export default {
   state,

@@ -1,10 +1,10 @@
 <template>
-  <footer class="footer_guide border-1px" v-show="$route.meta.isShowFooter">
+  <footer class="footer_guide border-1px">
     <a
       href="javascript:;"
       class="guide_item"
-      :class="{on:$route.path==='/msite'}"
-      @click="goTo('/msite')"
+      :class="{'on':$route.path==='/msite'}"
+      @click="goto('/msite')"
     >
       <span class="item_icon">
         <i class="iconfont icon-waimai"></i>
@@ -14,8 +14,8 @@
     <a
       href="javascript:;"
       class="guide_item"
-      :class="{on:$route.path==='/search'}"
-      @click="goTo('/search')"
+      :class="{'on':$route.path==='/search'}"
+      @click="goto('/search')"
     >
       <span class="item_icon">
         <i class="iconfont icon-search"></i>
@@ -25,8 +25,8 @@
     <a
       href="javascript:;"
       class="guide_item"
-      :class="{on:$route.path==='/order'}"
-      @click="goTo('/order')"
+      :class="{'on':$route.path==='/order'}"
+      @click="goto('/order')"
     >
       <span class="item_icon">
         <i class="iconfont icon-dingdan"></i>
@@ -36,8 +36,8 @@
     <a
       href="javascript:;"
       class="guide_item"
-      :class="{on:$route.path==='/profile'}"
-      @click="goTo('/profile')"
+      :class="{'on':$route.path==='/profile'}"
+      @click="goto('/profile')"
     >
       <span class="item_icon">
         <i class="iconfont icon-geren"></i>
@@ -49,16 +49,21 @@
 <script>
 export default {
   methods: {
-    goTo (path) {
+    // 根据传入的地址,跳转到对应的路由界面
+    goto (path) {
+      // 不带记录的
       if (this.$route.path !== path) {
         this.$router.replace(path)
       }
+
+      // 带记录
+      // this.$router.push()
     }
-  },
+  }
 }
 </script>
-<style lang="stylus" rel="stylesheet/stylus" scoped>
-@import '../../common/stylus/mixins'
+<style lang="stylus" rel="stylesheet/stylus">
+@import '../../common/stylus/mixins.styl'
 .footer_guide // footer
   top-border-1px(#e4e4e4)
   position fixed
@@ -87,4 +92,3 @@ export default {
       .iconfont
         font-size 22px
 </style>
- 

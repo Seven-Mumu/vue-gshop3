@@ -6,37 +6,23 @@ export const reqAddress = (longitude, latitude) => ajax(BASE + `/position/${lati
 // 2.获取食品分类列表
 export const reqCategorys = () => ajax(BASE + `/index_category`)
 // 3.根据经纬度获取商铺列表
-export const reqShops = (longitude, latitude) => ajax(BASE + `/shops`, {
-  longitude,
-  latitude
-})
+export const reqShops = (longitude, latitude) => ajax(BASE + `/shops`, { longitude, latitude })
 // 4.发送短信验证码
-export const reqSendCode = (phone) => ajax(BASE + `/sendcode`, {
-  phone
-})
+export const reqSendCode = (phone) => ajax(BASE + `/sendcode`, { phone })
 // 5.根据手机号码和验证码进行登录---POST
-export const reqSmsLogin = (phone, code) => ajax(BASE + `/login_sms`, {
-  phone,
-  code
-}, 'POST')
+export const reqSmsLogin = (phone, code) => ajax(BASE + `/login_sms`, { phone, code }, 'POST')
 // 6.根据用户名/密码/图形验证码登录---POST
-export const reqPwdLogin = ({
-  name,
-  pwd,
-  captcha
-}) => ajax(BASE + `/login_pwd`, {
-  name,
-  pwd,
-  captcha
-}, 'POST')
+export const reqPwdLogin = ({ name, pwd, captcha }) => ajax(BASE + `/login_pwd`, { name, pwd, captcha }, 'POST')
 // 7.自动登录的功能
-export const reqAutoLogin = () => ajax(BASE + `/userinfo`)
+export const reqUserInfo = () => ajax(BASE + `/userinfo`)
 // 8.退出操作
-export const reqLogout = () => ajax(BASE + `/logout`)
+export const reqLoginOut = () => ajax(BASE + `/logout`)
 
-// 食品
-export const reqGoods = () => ajax('/goods')
-// 评价
-export const reqRatings = () => ajax('/ratings')
-// 商家信息
-export const reqInfo = () => ajax('/info')
+
+
+// 获取点餐的数据的接口
+export const reqGoods=()=>ajax('/goods')
+// 获取评价的数据的接口
+export const reqRatings=()=>ajax('/ratings')
+// 获取商家的数据的接口
+export const reqInfo=()=>ajax('/info')

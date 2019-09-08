@@ -1,39 +1,33 @@
 <template>
   <div>
-    <shop-header />
-
+    <ShopHeader />
     <div class="tab">
       <div class="tab-item">
-        <router-link to="/shop/goods"
-                     replace>点餐</router-link>
+        <router-link replace to="/shop/goods">点餐</router-link>
       </div>
       <div class="tab-item">
-        <router-link to="/shop/rating"
-                     replace>评价</router-link>
+        <router-link replace to="/shop/ratings">评价</router-link>
       </div>
       <div class="tab-item">
-        <router-link to="/shop/info"
-                     replace>商家</router-link>
+        <router-link replace to="/shop/info">商家</router-link>
       </div>
     </div>
-
-    <router-view />
+    <router-view></router-view>
   </div>
 </template>
-
 <script>
-import ShopHeader from '../../components/ShopHeader/ShopHeader.vue'
-
+// 引入ShopHeader.vue组件
+import ShopHeader from "../../components/ShopHeader/ShopHeader.vue";
 export default {
   components: {
     ShopHeader
   },
+  // 界面加载后,发送请求----dispatch('getInfo')
   mounted () {
     this.$store.dispatch('getInfo')
-  },
-}
+  }
+};
 </script>
-
 <style lang="stylus" rel="stylesheet/stylus">
 @import '../../common/stylus/mixins.styl'
 .tab

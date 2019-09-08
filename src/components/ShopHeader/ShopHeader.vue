@@ -1,16 +1,12 @@
 <template>
   <div class="shop-header">
-    <nav class="shop-nav"
-         :style="{backgroundImage: `url(${info.bgImg})`}">
-      <a class="back"
-         @click="$router.back()">
+    <nav class="shop-nav" :style="{backgroundImage: `url(${info.bgImg})`}">
+      <a class="back" @click="$router.back()">
         <i class="iconfont icon-arrow_left" />
       </a>
     </nav>
-    <div class="shop-content"
-         @click="isShowBulletin=!isShowBulletin">
-      <img :src="info.avatar"
-           class="content-image">
+    <div class="shop-content" @click="isShowBulletin=!isShowBulletin">
+      <img :src="info.avatar" class="content-image" />
       <div class="header-content">
         <h2 class="content-title">
           <span class="content-tag">
@@ -31,9 +27,7 @@
         <p class="shop-notice">{{info.bulletin}}</p>
       </div>
     </div>
-    <div class="shop-header-discounts"
-         v-if="info.name"
-         @click="isShowSupports=!isShowSupports">
+    <div class="shop-header-discounts" v-if="info.name" @click="isShowSupport=!isShowSupport">
       <div class="discounts-left">
         <div class="activity activity-green">
           <span class="content-tag">
@@ -42,13 +36,10 @@
           <span class="activity-content">{{info.supports[0].content}}</span>
         </div>
       </div>
-      <div class="discounts-right">
-        {{info.supports.length}}个优惠
-      </div>
+      <div class="discounts-right">{{info.supports.length}}个优惠</div>
     </div>
     <transition name="fade">
-      <div class="shop-brief-modal"
-           v-show="isShowBulletin">
+      <div class="shop-brief-modal" v-show="isShowBulletin">
         <div class="brief-modal-content">
           <h2 class="content-title">
             <span class="content-tag">
@@ -79,63 +70,59 @@
             </li>
           </ul>
           <h3 class="brief-modal-title">
-            <span>公告</span></h3>
-          <div class="brief-modal-notice">
-            {{info.bulletin}}
-          </div>
-          <div class="mask-footer"
-               @click="isShowBulletin=!isShowBulletin">
+            <span>公告</span>
+          </h3>
+          <div class="brief-modal-notice">{{info.bulletin}}</div>
+          <div class="mask-footer" @click="isShowBulletin=!isShowBulletin">
             <span class="iconfont icon-close"></span>
           </div>
         </div>
-        <div class="brief-modal-cover"
-             @click="isShowBulletin=!isShowBulletin"></div>
+        <div class="brief-modal-cover" @click="isShowBulletin=!isShowBulletin"></div>
       </div>
     </transition>
     <transition name="move">
-      <div class="activity-sheet"
-           v-show="isShowSupports">
+      <div class="activity-sheet" v-show="isShowSupport">
         <div class="activity-sheet-content">
-          <h2 class="activity-sheet-title">
-            优惠活动</h2>
+          <h2 class="activity-sheet-title">优惠活动</h2>
           <ul class="list">
-            <li class="activity-item"
-                :class="classArr[support.type]"
-                v-for="(support,index) in info.supports"
-                :key="index">
+            <li
+              class="activity-item"
+              :class="classArr[support.type]"
+              v-for="(support,index) in info.supports"
+              :key="index"
+            >
               <span class="content-tag">
                 <span class="mini-tag">{{support.name}}</span>
               </span>
               <span class="activity-content">{{support.content}}</span>
             </li>
           </ul>
-          <div class="activity-sheet-close"
-               @click="isShowSupports=!isShowSupports">
+          <div class="activity-sheet-close" @click="isShowSupport=!isShowSupport">
             <span class="iconfont icon-close"></span>
           </div>
         </div>
-        <div class="activity-sheet-cover"
-             @click="isShowSupports=!isShowSupports"></div>
+        <div class="activity-sheet-cover" @click="isShowSupport=!isShowSupport"></div>
       </div>
     </transition>
   </div>
 </template>
+
 <script>
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 export default {
   computed: {
     ...mapState({
       info: state => state.shop.info
     })
   },
-  data () {
+  data() {
     return {
-      isShowBulletin: false, // 是否显示商家详细信息 
-      isShowSupports: false,  // 是否显示优惠信息
-      classArr: ["activity-green", "activity-orange", "activity-red"] // 优惠信息的class数组
-    }
-  },
-}
+      classArr: ["activity-green", "activity-orange", "activity-red"],
+      isShowBulletin: false, // 公告
+      isShowSupport: false // 活动
+    };
+  }
+};
 </script>
 <style lang="stylus" rel="stylesheet/stylus" scoped>
 @import '../../common/stylus/mixins.styl'
@@ -322,9 +309,9 @@ export default {
     z-index 52
     flex-direction column
     color #333
-    &.fade-enter-active, &.fade-leave-active
-      transition all 0.8s
-    &.fade-enter, &.fade-leave-to
+    &.fade-enter-active,&.fade-leave-active
+      transition  all .8s
+    &.fade-enter,&.fade-leave-to
       opacity 0
     .brief-modal-cover
       position absolute
@@ -427,8 +414,8 @@ export default {
     height 100%
     z-index 99
     &.move-enter-active, &.move-leave-active
-      transition opacity 0.6s
-    &.move-enter, &.move-leave-to
+      transition opacity 0.3s
+    &.move-enter-active, &.move-leave-active
       opacity 0
     .activity-sheet-content
       position absolute
@@ -504,4 +491,3 @@ export default {
       background-color rgba(0, 0, 0, 0.5)
 </style>
 
- 
